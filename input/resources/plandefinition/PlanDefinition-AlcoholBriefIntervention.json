@@ -21,7 +21,7 @@
   "description": "Brief intervention counseling suggestions.",
   "date": "2020-05-04",
   "library": [
-    "Library/BriefInterventionLogicLibrary|1.0"
+    "http://www.cdc.gov/ncbddd/fasd/briefintervention-library" 
   ],
   "action": [
     {
@@ -46,7 +46,7 @@
           "expression": {
             "language": "text/cql",
             "expression": "DisplayNotification",
-            "reference": "Library/BriefInterventionLogicLibrary|1.0"
+            "reference": "http://www.cdc.gov/ncbddd/fasd/briefintervention-library"
           }
         }
       ],
@@ -55,14 +55,14 @@
           "expression": {
             "language": "text/cql",
             "expression": "NotificationText",
-            "reference": "Library/BriefInterventionLogicLibrary|1.0"
+            "reference": "http://www.cdc.gov/ncbddd/fasd/briefintervention-library"
           }
         },
         {
           "expression": {
             "language": "text/cql",
             "expression": "BriefInterventions",
-            "reference": "Library/BriefInterventionLogicLibrary|1.0"
+            "reference": "http://www.cdc.gov/ncbddd/fasd/briefintervention-library"
           }
         }
       ]
