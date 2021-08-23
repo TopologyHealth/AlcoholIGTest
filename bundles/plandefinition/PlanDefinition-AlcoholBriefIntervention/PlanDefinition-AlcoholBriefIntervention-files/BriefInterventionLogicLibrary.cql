@@ -1,22 +1,22 @@
-/*  Library: Alcohol Screening and Brief Intervention (ASBI) Clinical Decision Support (CDS):
+/*  Library: Alcohol Screening and Brief Intervention (ASBI) Clinical Decision Support (CDS): 
 Brief Intervention and Referral Logic Library
     Author: CMS Alliance to Modernize Healthcare, operated by THE MITRE Corporation.
 
-    (C) 2021 The MITRE Corporation. All Rights Reserved. Approved for Public Release: 20-0458.
+    (C) 2021 The MITRE Corporation. All Rights Reserved. Approved for Public Release: 20-0458. 
     Distribution Unlimited.
 
-    Unless otherwise noted, this work is available under an Apache 2.0 license.
-    It was produced by the MITRE Corporation for the National Center on Birth Defects
-    and Developmental Disabilities, Centers for Disease Control and Prevention in
-    accordance with the Statement of Work, contract number 75FCMC18D0047, task order
+    Unless otherwise noted, this work is available under an Apache 2.0 license. 
+    It was produced by the MITRE Corporation for the National Center on Birth Defects 
+    and Developmental Disabilities, Centers for Disease Control and Prevention in 
+    accordance with the Statement of Work, contract number 75FCMC18D0047, task order 
     number 75D30119F05691.
 
-    References to and reproductions of the AUDIT alcohol screening instrument are made
-    by permission from the World Health Organization (WHO). The WHO does not endorse
-    this project, does not provide any warranty, and does not assume any liability
+    References to and reproductions of the AUDIT alcohol screening instrument are made 
+    by permission from the World Health Organization (WHO). The WHO does not endorse 
+    this project, does not provide any warranty, and does not assume any liability 
     for its use. For further information, please see:
 
-    Alcohol Use Disorders Identification Test - Guidelines for Use in Primary Care,
+    Alcohol Use Disorders Identification Test - Guidelines for Use in Primary Care, 
     Second Edition. Geneva, World Health Organization, 2001.
 
     AUDIT (C) World Health Organization 2001
@@ -30,7 +30,7 @@ library BriefInterventionAndReferralLogicLibrary version '1.1.0'
 
 using FHIR version '4.0.1'
 
-include FHIRHelpers version '4.0.1' called FHIRHelpers
+include "FHIRHelpers" version '4.0.1' called FHIRHelpers
 
 // -----------------------------------------------------------------------------
 // CODESYSTEMS, VALUE SETS, CODES, AND CONCEPTS
@@ -45,11 +45,11 @@ codesystem "NULL FLAVOR": 'http://terminology.hl7.org/CodeSystem/v3-NullFlavor'
 codesystem "LOCAL": 'http://www.cdc.gov/ncbddd/fasd'
 
 // [See value set in VSAC](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.3.526.3.378/expansion)
-valueset "Pregnancy": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.378'
+valueset "Pregnancy": '2.16.840.1.113883.3.526.3.378'
 // [See value set in VSAC](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1032.80/expansion)
-valueset "Pregnancy (New ICD10 codes published in 2018 and 2019)": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1032.80'
+valueset "Pregnancy (New ICD10 codes published in 2018 and 2019)": '2.16.840.1.113762.1.4.1032.80'
 // [See value set in VSAC](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1032.124/expansion)
-valueset "Alcohol screening intervention": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1032.124'
+valueset "Alcohol screening intervention": '2.16.840.1.113762.1.4.1032.124'
 
 // Standard codes
 code "Pregnancy status code": '82810-3' from "LOINC" display 'Pregnancy status'
@@ -87,7 +87,7 @@ concept "Condition Relapse": { "Relapse clinical status code" } display 'Relapse
 concept "Condition Inactive": { "Inactive clinical status code" } display 'Inactive'
 concept "Condition Remission": { "Remission clinical status code" } display 'Remission'
 concept "Condition Resolved": { "Resolved clinical status code" } display 'Resolved'
-concept "Alcohol screening codes": {
+concept "Alcohol screening codes": { 
   "WHO AUDIT-C Total Score code", "WHO AUDIT Total Score code" ,
   "USAUDIT-C Total Score code", "USAUDIT Total Score code"
   } display 'Alcohol screening codes'
@@ -99,13 +99,13 @@ context Patient
 
 // The patient's sex at birth is used in several parts of the logic.
 // Sex at birth defined according to Office of the National Coordinator (ONC) Interoperability Standards Advisory (ISA):
-// https://www.healthit.gov/isa/representing-patient-sex-birth
+// https://www.healthit.gov/isa/representing-patient-sex-birth 
 define SexAtBirthExtension:
   singleton from (Patient.extension Ext
     where Ext.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex')
-
+  
 define SexAtBirth:
-  if SexAtBirthExtension is not null then
+  if SexAtBirthExtension is not null then 
     SexAtBirthExtension.value.value
   else "Unknown value code".code
 
@@ -129,7 +129,7 @@ define function ToConcept(concept FHIR.CodeableConcept):
   FHIRHelpers.ToConcept(concept)
 
 // From the CDS Connect Commons Library
-// Available from the Agency for Healthcare Research and Quality (AHRQ) under an
+// Available from the Agency for Healthcare Research and Quality (AHRQ) under an 
 // Apache 2.0 license. See https://cds.ahrq.gov
 define function PeriodToInterval(period FHIR.Period):
   if period is null then
@@ -145,7 +145,7 @@ define function PeriodToInterval(period FHIR.Period):
 define RecentAlcoholScreeningLookbackStart:
   Today() - 1 year
 
-// Load any previously completed QuestionnaireReponses for alcohol screening in
+// Load any previously completed QuestionnaireReponses for alcohol screening in 
 // the past 12 months and sort by date authored.
 define PreviouslyCompletedQuestionnaireResponses:
   [QuestionnaireResponse] QR
@@ -164,7 +164,7 @@ define MostRecentlyCompletedQuestionnaireResponse:
 define MostRecentQuestionnaireURL:
   MostRecentlyCompletedQuestionnaireResponse.questionnaire.value
 
-// The date of last screening is needed for determining whether an intervention
+// The date of last screening is needed for determining whether an intervention 
 // needs to occur.
 define DateOfMostRecentQuestionnaireResponse:
   MostRecentlyCompletedQuestionnaireResponse QR
@@ -211,7 +211,7 @@ define RecentScoreAuditC:
 // Did they receive an AUDIT-C score?
 define HasRecentScoreAuditC:
   RecentScoreAuditC is not null
-
+  
 // Find previous full AUDIT score
 define RecentScoreFullAudit:
   singleton from ((MostRecentResponseValues) RV
@@ -268,7 +268,7 @@ define HasRecentNeverResponseAuditQuestionOne:
 
 define RecentAlcoholScreeningObservations:
   [Observation: "Alcohol screening codes"] O
-    where
+    where 
       (date from O.effective.value between RecentAlcoholScreeningLookbackStart and Today()
         or date from O.issued.value between RecentAlcoholScreeningLookbackStart and Today())
       and O.status.value in {'final', 'corrected', 'amended'}
@@ -282,7 +282,7 @@ define MostRecentAlcoholScreeningObservation:
 
 define DateOfMostRecentAlcoholScreeningObservation:
   date from Coalesce(
-    MostRecentAlcoholScreeningObservation.effective,
+    MostRecentAlcoholScreeningObservation.effective, 
     MostRecentAlcoholScreeningObservation.issued
   ).value
 
@@ -337,13 +337,13 @@ define Excluded:
 // CONSIDER PREGNANCY STATUS
 // -----------------------------------------------------------------------------
 // Verified pregnancy Observations in the last 42 weeks:
-// Defined as FHIR Observations with the "Pregnancy status" code, from any time in the last 42 weeks,
-// with a value indicating patient is pregnant, and with a status indicating the Observation has been
+// Defined as FHIR Observations with the "Pregnancy status" code, from any time in the last 42 weeks, 
+// with a value indicating patient is pregnant, and with a status indicating the Observation has been 
 // verified.
 define PregnancyObservations:
   [Observation: "Pregnancy status"] P
     let lookback: Interval[Now() - 42 weeks, Now()]
-    where
+    where 
       ((P.effective as FHIR.dateTime).value in lookback
         or P.issued.value in lookback)
       and ToConcept(P.value as FHIR.CodeableConcept) ~ "Pregnant"
@@ -352,7 +352,7 @@ define PregnancyObservations:
 define PregnancyConditions:
   ([Condition: "Pregnancy"] union [Condition: "Pregnancy (New ICD10 codes published in 2018 and 2019)"]) C
     let lookback: Interval[Now() - 42 weeks, Now()]
-    where
+    where 
       ((C.onset as FHIR.dateTime).value in lookback
         or PeriodToInterval(C.onset as FHIR.Period) overlaps lookback
         or C.recordedDate.value in lookback)
@@ -372,7 +372,7 @@ define HasRecentYesToPregnancyQuestion:
 
 // Does the patient meet the pregnancy inclusion criteria?
 define DoesMeetPregnancyInclusionCriteria:
-  Exists(PregnancyObservations)
+  Exists(PregnancyObservations) 
     or Exists(PregnancyConditions)
     or HasRecentYesToPregnancyQuestion
 
@@ -399,10 +399,10 @@ define MostRecentQuestionText:
 
 // Combine the questions and answers into one structure for ease of access
 define QuestionResponsePairs:
-  from
+  from 
     "MostRecentQuestionText" QT,
     "MostRecentResponseValues" RV
-  where QT.id = RV.id
+  where QT.id = RV.id 
     and (RV.answer as FHIR.Coding).display is not null
     and QT.question is not null
   return Tuple {
@@ -491,22 +491,22 @@ define MostRecentScreeningScore:
   else if HasRecentScoreAuditC then RecentScoreAuditC
   else 0
 
-// According to the most recent alcohol screening responses, is the patient a
+// According to the most recent alcohol screening responses, is the patient a 
 // Zone 1 drinker?
 define IsZoneOneDrinker:
   MostRecentScreeningScore in ScoreBracketZoneOne
 
-// According to the most recent alcohol screening responses, is the patient a
+// According to the most recent alcohol screening responses, is the patient a 
 // Zone 2 drinker?
 define IsZoneTwoDrinker:
   MostRecentScreeningScore in ScoreBracketZoneTwo
 
-// According to the most recent alcohol screening responses, is the patient a
+// According to the most recent alcohol screening responses, is the patient a 
 // Zone 3 drinker?
 define IsZoneThreeDrinker:
   MostRecentScreeningScore in ScoreBracketZoneThree
 
-// According to the most recent alcohol screening responses, is the patient a
+// According to the most recent alcohol screening responses, is the patient a 
 // Zone 4 drinker?
 define IsZoneFourDrinker:
   MostRecentScreeningScore in ScoreBracketZoneFour
@@ -526,10 +526,10 @@ define ZoneRomanNumeral:
   else ''
 
 define PregnantAndDrinking:
-  DoesMeetPregnancyInclusionCriteria
+  DoesMeetPregnancyInclusionCriteria 
   and not (
     HasRecentNoApsResponse
-    or (HasRecentYesApsResponse
+    or (HasRecentYesApsResponse 
       and (HasRecentNeverResponseUsauditQuestionOne
         or HasRecentNeverResponseAuditQuestionOne))
     or (MostRecentScreeningScore = 0
@@ -540,12 +540,12 @@ define PregnantAndNotDrinking:
   DoesMeetPregnancyInclusionCriteria and not PregnantAndDrinking
 
 define AlcoholScreeningResultsTextSummaryPartOne:
-  if PregnantAndNotDrinking then
+  if PregnantAndNotDrinking then 
     'The patient indicates they do not drink alcohol\n'
   else if PregnantAndDrinking then
     'The patient indicates they are drinking alcohol. There is NO known safe amount of alcohol use during pregnancy or while trying to become pregnant.<sup>*</sup>\n'
   else (
-    if IsZoneOneDrinker then
+    if IsZoneOneDrinker then 
       'The patient’s screening results indicate low risk drinking or abstinence. '
     else if IsZoneTwoDrinker or IsZoneThreeDrinker or IsZoneFourDrinker then
       'The patient indicates they are drinking alcohol. '
@@ -556,7 +556,7 @@ define AlcoholScreeningResultsTextSummaryPartTwo:
   if PregnantAndNotDrinking then
     ''
   else
-    'The patient’s screening score is '
+    'The patient’s screening score is ' 
       + ToString(MostRecentScreeningScore as System.Integer)
       + ', and falls within Zone '
       + ZoneRomanNumeral
@@ -666,9 +666,9 @@ define AlcoholPatientEducationResources:
 
 // Did the most recent alcohol screening include the NIDA QS?
 define NidaQsWasPerformed:
-  if MostRecentQuestionnaireURL = 'http://www.cdc.gov/ncbddd/fasd/nidaqs2usaudit' then
+  if MostRecentQuestionnaireURL = 'http://www.cdc.gov/ncbddd/fasd/nidaqs2usaudit' then 
     true
-  else
+  else 
     false
 
 define RecentNidaTobaccoResponse:
@@ -687,21 +687,21 @@ define RecentNidaIllegalDrugResponse:
   return singleton from (RV.answer as FHIR.Coding)
 
 define TobaccoDidDidNot:
-  if singleton from RecentNidaTobaccoResponse ~ "Never" then
+  if singleton from RecentNidaTobaccoResponse ~ "Never" then 
     'did not use'
   else if singleton from RecentNidaTobaccoResponse in {"Once or twice", "Monthly", "Weekly", "Daily or Almost Daily"} then
     'used'
   else ''
 
 define RxDrugDidDidNot:
-  if singleton from RecentNidaRxDrugResponse ~ "Never" then
+  if singleton from RecentNidaRxDrugResponse ~ "Never" then 
     'did not use'
   else if singleton from RecentNidaRxDrugResponse in {"Once or twice", "Monthly", "Weekly", "Daily or Almost Daily"} then
     'used'
   else ''
 
 define IllegalDrugDidDidNot:
-  if singleton from RecentNidaIllegalDrugResponse ~ "Never" then
+  if singleton from RecentNidaIllegalDrugResponse ~ "Never" then 
     'did not use'
   else if singleton from RecentNidaIllegalDrugResponse in {"Once or twice", "Monthly", "Weekly", "Daily or Almost Daily"} then
     'used'
@@ -709,7 +709,7 @@ define IllegalDrugDidDidNot:
 
 define NonAlcoholScreeningResultsTextSummary:
   if NidaQsWasPerformed then
-    'The patient indicates that in the past year, they '
+    'The patient indicates that in the past year, they ' 
     + TobaccoDidDidNot + ' tobacco products; they '
     + RxDrugDidDidNot + ' prescription drugs for nonmedical reasons; and that they '
     + IllegalDrugDidDidNot + ' illegal drugs.'
